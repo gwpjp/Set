@@ -21,15 +21,58 @@ createDeck <- function(){
   return(deck)
 }
 
+
+
+#Shuffle deck
+shuffleDeck <- function(d) {
+  order <- sample(1:length(d))
+  return(d[order])
+}
+
+#Check for set
+checkSet <- function(l) {
+  set <- FALSE
+  for (i in 1:(length(l)-2)) {
+    for (j in (i+1):(length(l)-1)) {
+      for (k in (j+1):length(l)) {
+        val <- TRUE
+        c1 <- l[[i]]
+        c2 <- l[[j]]
+        c3 <- l[[k]]
+        for (n in 1:4){
+          if(c1[n] == c2[n] && c1[n] == c3[n]) {
+            val <- val && TRUE
+          } else if (c1[n] != c2[n] && c2[n] != c3[n] && c1[n] != c3[n] ) {
+            val <- val && TRUE
+          } else {
+            val <- val && FALSE
+          }
+        }
+        if(val) {
+          set <- TRUE
+          break
+        }
+      }
+    }
+  }
+  return(set)  
+}
+
+
+
+#Initialize deck
 d <- createDeck()
 
 set.seed(1)
-
-order <- sample(1:81)
-for (i in order) {
-  print(d[[i]])
+#Check if first layout is set for lots of decks
+count <- 0
+for (i in 1:100000) {
+  sDeck <- shuffleDeck(d)
+  if(checkSet(sDeck[1:16]) == TRUE) {
+    count <- count + 1
+  } 
 }
-sDeck <- d[order]
-head(sDeck)
-
+count
+# For 100,000 deals of 12 cards, get 96.81%
+# For 100,000 deals of 16 cards, get 99.992%
 
